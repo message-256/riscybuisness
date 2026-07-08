@@ -127,8 +127,8 @@ func main() {
 		fmt.Print(addresses[insp], ":")
  		humaninstruction,err = stdin.ReadString('\n')
 		humaninstruction = humaninstruction[:len(humaninstruction)-1]
-		if len(humaninstruction) < 3 || len(humaninstruction) > 5 {
-			fmt.Println("instruction length wrong",humaninstruction)
+		if len(humaninstruction) != 5 {
+			fmt.Println("instruction length wrong",humaninstruction,"(length",len(humaninstruction),")","is not 5")
 			continue
 		}
 		current.operand ,err = strconv.ParseInt(string(humaninstruction[0]),16,32);
