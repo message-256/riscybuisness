@@ -2,4 +2,5 @@
 a small custom risc vm\
 its theoretically turing complete \
 but i havent tested it to hard\
-will finish tommorrow or something
+usage: \
+%instruction (first 4 bits)%registera%registerb
