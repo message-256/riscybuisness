@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"strconv"
-	//"os"
 )
 
 var addresses []int
