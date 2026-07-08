@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"bufio"
+	"os"
 )
 
 var addresses []int64
@@ -79,23 +81,23 @@ func cmp(registera,registerb int64) {
 }
 func movne(registera,registerb int64) {
 	if addresses[cmpr]&0b1 != 1 {
-		addresses[registera] = addresses[registerb]
+		mov(registera,registerb)
 	}
 }
 func move(registera,registerb int64) {
 	fmt.Println(addresses[registerb])
 	if addresses[cmpr]&0b1 == 1 {
-		addresses[registera] = addresses[registerb]
+		mov(registera,registerb)
 	}
 }
 func movl(registera,registerb int64) {
 	if addresses[cmpr]&0b01 == 1 {
-		addresses[registera] = addresses[registerb]
+		mov(registera,registerb)
 	}
 }
 func movg(registera,registerb int64) {
 	if addresses[cmpr]&0b001 == 1 {
-		addresses[registera] = addresses[registerb]
+		mov(registera,registerb)
 	}
 }
 func main() {
@@ -120,12 +122,13 @@ func main() {
 	var current instruction
 	var humaninstruction string
 	var err error
-	
+	stdin := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print(addresses[insp], ":")
-		fmt.Scanf("%s", &humaninstruction)
+ 		humaninstruction,err = stdin.ReadString('\n')
+		humaninstruction = humaninstruction[:len(humaninstruction)-1]
 		if len(humaninstruction) < 3 || len(humaninstruction) > 5 {
-			fmt.Println("instruction length wrong")
+			fmt.Println("instruction length wrong",humaninstruction)
 			continue
 		}
 		current.operand ,err = strconv.ParseInt(string(humaninstruction[0]),16,32);
@@ -143,13 +146,11 @@ func main() {
 			fmt.Println(err);
 			continue
 		}
-		fmt.Println(current);
 		for i := addresses[insp] ; instructionstack[i].operand != 0; i++ {
 			addresses[insp] = i;
 		}
 		instructionstack[addresses[insp]] = current
 		for instructionstack[addresses[insp]].operand != 0 {
-			fmt.Println("infinite loop", addresses[insp])
 			addresses[insr] = instructionstack[addresses[insp]].operand
 			addresses[addr1] = instructionstack[addresses[insp]].ra
 			addresses[addr2] = instructionstack[addresses[insp]].rb
