@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
-var addresses []int
-
+var addresses []int64
 const (
-	cmpr = iota
+	cmpr = iota + 1
 	outputr
-	constr
 	insr
 	insp
+	addr1
+	addr2
 	r1
 	r2
 	r3
@@ -25,80 +26,81 @@ const (
 )
 
 type instruction struct {
-	operand int
-	number  []int
+	operand int64
+	ra,rb int64
 }
+var instructionstack [64*1000]instruction
 
-func bint(o bool) int {
+func bint64(o bool) int64 {
 	if o {
 		return 1
 	}
 	return 0
 }
-func ld(number []int) {
-	addresses[constr] = int(number[0])
-}
-func mov(number []int) {
-	if number[0] == outputr {
-		fmt.Println(addresses[number[1]])
+func ld(register,number int64) {
+	if register == outputr {
+		fmt.Println(number)
 	}
-	addresses[number[0]] = addresses[number[1]]
+	addresses[register] = number
 }
-func add(number []int) {
-	addresses[number[0]] += addresses[number[1]]
+func mov(registera,registerb int64) {
+	if registera == outputr {
+		fmt.Println(addresses[registerb])
+	}
+	addresses[registera] = addresses[registerb]
 }
-func mul(number []int) {
-	addresses[number[0]] *= addresses[number[1]]
+func add(registera,registerb int64) {
+	addresses[registera] += addresses[registerb]
 }
-func div(number []int) {
-	addresses[number[0]] /= addresses[number[1]]
+func mul(registera,registerb int64) {
+	addresses[registera] *= addresses[registerb]
 }
-func sub(number []int) {
-	addresses[number[0]] -= addresses[number[1]]
+func div(registera,registerb int64) {
+	addresses[registera] /= addresses[registerb]
+}
+func sub(registera,registerb int64) {
+	addresses[registera] -= addresses[registerb]
 }
 
-func xor(number []int) {
-	addresses[number[0]] ^= addresses[number[1]]
+func xor(registera,registerb int64) {
+	addresses[registera] ^= addresses[registerb]
 }
-func and(number []int) {
-	addresses[number[0]] &= addresses[number[1]]
+func and(registera,registerb int64) {
+	addresses[registera] &= addresses[registerb]
 }
-func or(number []int) {
-	addresses[number[0]] |= addresses[number[1]]
+func or(registera,registerb int64) {
+	addresses[registera] |= addresses[registerb]
 }
-func not(number []int) {
-	addresses[number[0]] = ^addresses[number[0]]
+func not(registera,registerb int64) {
+	addresses[registera] = ^addresses[registera]
 }
-func cmp(number []int) {
-	addresses[cmpr] = bint((addresses[number[0]] == addresses[number[1]])) | (bint((addresses[number[0]] < addresses[number[1]])) << 1) | (bint((addresses[number[0]] > addresses[number[1]])) << 2)
+func cmp(registera,registerb int64) {
+	addresses[cmpr] = bint64((addresses[registera] == addresses[registerb])) | (bint64((addresses[registera] < addresses[registerb])) << 1) | (bint64((addresses[registera] > addresses[registerb])) << 2)
 }
-func jmp(number []int) {
-	addresses[insp] = addresses[number[0]]
-}
-func jne(number []int) {
+func movne(registera,registerb int64) {
 	if addresses[cmpr]&0b1 != 1 {
-		addresses[insp] = addresses[number[0]]
+		addresses[registera] = addresses[registerb]
 	}
 }
-func je(number []int) {
-	fmt.Println(addresses[number[0]])
+func move(registera,registerb int64) {
+	fmt.Println(addresses[registerb])
 	if addresses[cmpr]&0b1 == 1 {
-		addresses[insp] = addresses[number[0]]
+		addresses[registera] = addresses[registerb]
 	}
 }
-func jl(number []int) {
+func movl(registera,registerb int64) {
 	if addresses[cmpr]&0b01 == 1 {
-		addresses[insp] = addresses[number[0]]
+		addresses[registera] = addresses[registerb]
 	}
 }
-func jg(number []int) {
+func movg(registera,registerb int64) {
 	if addresses[cmpr]&0b001 == 1 {
-		addresses[insp] = addresses[number[0]]
+		addresses[registera] = addresses[registerb]
 	}
 }
 func main() {
-	addresses = make([]int, r10)
-	var instructions = []func([]int){
+	addresses = make([]int64, r10)
+	var instructions = []func(int64,int64){
 		ld,
 		mov,
 		add,
@@ -110,34 +112,15 @@ func main() {
 		or,
 		xor,
 		cmp,
-
-		jmp,
-		je,
-		jne,
-		jl,
-		jg,
+		movne,
+		move,
+		movl,
+		movg,
 	}
-	var program []instruction
 	var current instruction
 	var humaninstruction string
-	var hexstuff = map[byte]int{
-		'0': 0,
-		'1': 1,
-		'2': 2,
-		'3': 3,
-		'4': 4,
-		'5': 5,
-		'6': 6,
-		'7': 7,
-		'8': 8,
-		'9': 9,
-		'a': 10,
-		'b': 11,
-		'c': 12,
-		'd': 13,
-		'e': 14,
-		'f': 15,
-	}
+	var err error
+	
 	for {
 		fmt.Print(addresses[insp], ":")
 		fmt.Scanf("%s", &humaninstruction)
@@ -145,19 +128,33 @@ func main() {
 			fmt.Println("instruction length wrong")
 			continue
 		}
-		current.operand = hexstuff[humaninstruction[0]]
-		current.number = make([]int, 1)
-		current.number[0] = (hexstuff[humaninstruction[1]] << 4) | hexstuff[humaninstruction[2]]
-		if len(humaninstruction) == 5 {
-			current.number = append(current.number, (hexstuff[humaninstruction[3]]<<4)|hexstuff[humaninstruction[4]])
+		current.operand ,err = strconv.ParseInt(string(humaninstruction[0]),16,32);
+		if err != nil {
+			fmt.Println(err);
+			continue
 		}
-		fmt.Println(current)
-		program = append(program, current)
-		addresses[insp] = len(program) - 1
-		for addresses[insp] < len(program) {
+		current.ra ,err = strconv.ParseInt(string(humaninstruction[1:3]),16,32);
+		if err != nil {
+			fmt.Println(err);
+			continue
+		}
+		current.rb ,err = strconv.ParseInt(string(humaninstruction[3:5]),16,32);
+		if err != nil {
+			fmt.Println(err);
+			continue
+		}
+		fmt.Println(current);
+		for i := addresses[insp] ; instructionstack[i].operand != 0; i++ {
+			addresses[insp] = i;
+		}
+		instructionstack[addresses[insp]] = current
+		for instructionstack[addresses[insp]].operand != 0 {
 			fmt.Println("infinite loop", addresses[insp])
-			addresses[insr] = program[addresses[insp]].operand
-			instructions[program[addresses[insp]].operand](program[addresses[insp]].number)
+			addresses[insr] = instructionstack[addresses[insp]].operand
+			addresses[addr1] = instructionstack[addresses[insp]].ra
+			addresses[addr2] = instructionstack[addresses[insp]].rb
+
+			instructions[addresses[insr]-1](addresses[addr1],addresses[addr2])
 			addresses[insp]++
 		}
 	}
