@@ -7,7 +7,7 @@ import (
 var addresses []int
 
 const (
-	cmpr = iota + 1
+	cmpr = iota
 	outputr
 	constr
 	insr
