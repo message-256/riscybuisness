@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"errors"
 )
 
 func paddparseh(in int64, bit int) string {
@@ -18,8 +19,7 @@ func paddparseh(in int64, bit int) string {
 }
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println(os.Stderr,"usage: %file(assembly)")
-		os.Exit(0)
+		fmt.Println("usage: %file(assembly)")
 	}
 	var instructions = map[string]int{
 		"exit":  0,
@@ -62,7 +62,8 @@ func main() {
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "cant open file", err)
+		fmt.Fprintf(os.Stderr, "cant open file", err)
+		os.Exit(-1)
 	}
 	stringedinput := string(input)
 	stringedinput = strings.ReplaceAll(stringedinput, "\t", "")
@@ -71,10 +72,12 @@ func main() {
 	var output string
 	var ra, rb int
 	var ok bool
+	var collective error
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
-			fmt.Fprintln(os.Stderr, "no operand on line", i, "(\"", lines[i], "\")")
+			errstring := fmt.Sprintln( "no operand on line", i, "(\"", lines[i], "\")")
+			collective = errors.Join(collective,errors.New(errstring))
 			continue
 		}
 		operand := instructions[splitstring[0]]
@@ -83,23 +86,25 @@ func main() {
 		if err != nil {
 			ra, ok = registers[registersstring[0]]
 			if !ok {
-				fmt.Fprintln(os.Stderr, "error ", registersstring[0], "not a known register nor is it a number", "(", err, ")")
-				continue
+				errstring := fmt.Sprintln( "error ", registersstring[0], "not a known register nor is it a number", "(", err, ")")
+				collective = errors.Join(collective,errors.New(errstring))
 			}
-			
 
 		}
 		rb, err = strconv.Atoi(registersstring[1])
 		if err != nil {
 			rb, ok = registers[registersstring[1]]
 			if !ok {
-				fmt.Fprintln(os.Stderr, "error ", registersstring[1], "not a known register nor is it a number", "(", err, ")")
-				continue
+				errstring := fmt.Sprintln( "error ", registersstring[1], "not a known register nor is it a number", "(", err, ")")
+				collective = errors.Join(collective,errors.New(errstring))
 			}
 		}
 		output += paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n"
 
 	}
-
-	fmt.Print(output)
+	if collective == nil{
+		fmt.Print(output)
+	} else {
+		fmt.Fprintln(os.Stderr,collective)
+	}
 }
