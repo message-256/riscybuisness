@@ -118,7 +118,6 @@ func not(registera, registerb int64) {
 }
 func cmp(registera, registerb int64) {
 	addresses[cmpr] = bint64((addresses[registera] == addresses[registerb])) | (bint64((addresses[registera] < addresses[registerb])) << 1) | (bint64((addresses[registera] > addresses[registerb])) << 2)
-	fmt.Println(addresses[cmpr])
 }
 func movne(registera, registerb int64) {
 	if addresses[cmpr]&0b1 != 1 {
@@ -126,7 +125,6 @@ func movne(registera, registerb int64) {
 	}
 }
 func move(registera, registerb int64) {
-	fmt.Println(addresses[registerb])
 	if addresses[cmpr]&0b1 == 1 {
 		mov(registera, registerb)
 	}
