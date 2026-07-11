@@ -22,6 +22,7 @@ func main() {
 		fmt.Println("usage: %file(assembly)")
 	}
 	var instructions = map[string]int{
+		"exit": 0,
 		"ld":    1,
 		"mov":   2,
 		"add":   3,

@@ -39,6 +39,7 @@ type instruction struct {
 
 var instructionstack [64 * 1000]instruction
 var instructions = []func(int64, int64){
+	exit,
 	ld,
 	mov,
 	add,
@@ -81,7 +82,10 @@ func bint64(o bool) int64 {
 	}
 	return 0
 }
-
+func exit (registera,registerb int64){
+	fmt.Println(addresses[registera],addresses[registerb])
+	os.Exit(0);
+}
 func ld(register, number int64) {
 	if register == outputr {
 		fmt.Println(number)
@@ -162,13 +166,14 @@ func parse(line string) (instruction, error) {
 
 }
 func run() {
-	for instructionstack[addresses[insp]].operand != 0 && addresses[insp] < int64(len(instructionstack)) {
+	for addresses[insp] < int64(len(instructionstack)) {
 		addresses[insr] = instructionstack[addresses[insp]].operand
 		addresses[addr1] = instructionstack[addresses[insp]].ra
 		addresses[addr2] = instructionstack[addresses[insp]].rb
-		instructions[addresses[insr]-1](addresses[addr1], addresses[addr2])
-
 		addresses[insp]++
+		instructions[addresses[insr]](addresses[addr1], addresses[addr2])
+
+
 	}
 
 }
