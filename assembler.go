@@ -18,7 +18,8 @@ func paddparseh(in int64, bit int) string {
 }
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("usage: %file(assembly)")
+		fmt.Println(os.Stderr,"usage: %file(assembly)")
+		os.Exit(0)
 	}
 	var instructions = map[string]int{
 		"exit":  0,
