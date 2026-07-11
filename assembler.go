@@ -84,7 +84,9 @@ func main() {
 			ra, ok = registers[registersstring[0]]
 			if !ok {
 				fmt.Fprintln(os.Stderr, "error ", registersstring[0], "not a known register nor is it a number", "(", err, ")")
+				continue
 			}
+			
 
 		}
 		rb, err = strconv.Atoi(registersstring[1])
@@ -92,6 +94,7 @@ func main() {
 			rb, ok = registers[registersstring[1]]
 			if !ok {
 				fmt.Fprintln(os.Stderr, "error ", registersstring[1], "not a known register nor is it a number", "(", err, ")")
+				continue
 			}
 		}
 		output += paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n"
