@@ -30,7 +30,7 @@ instructions: \
 &emsp; &emsp; exit: exit printing arg1 and arg2\
 \
 &emsp; control:\
-&emsp; &emsp; all control instructions move arg2 into arg1:\
+&emsp; &emsp; all control instructions move arg2 into arg1\
 &emsp; &emsp; ld: move unconditionally treating arg1 as an address arg2 as number\
 &emsp; &emsp; mov: move unconditionally treating both as address\
 &emsp; &emsp; movne: mov if previous args to cmp were not equal\
