@@ -5,7 +5,7 @@ but i havent tested it to hard\
 usage: \
 %instruction(8 bits)%registera(8 bit)%registerb(8 bit)
 instructions must be padded\
-in the assembler all instructions go i arg1,arg2\
+in the assembler all instructions go instruction arg1,arg2\
 if you dont put it in this way it'll do something funny(im not really sure what)\
 instructions: \
 &emsp; &emsp; arithmatic:\
@@ -20,6 +20,7 @@ instructions: \
 &emsp; &emsp;  xor: bitwise xor\
 &emsp; &emsp;  shl: shift left\
 &emsp; &emsp;  shr: shift right\
+\
 &emsp;  special:\
 &emsp; &emsp; cmp: compare arg1 to arg2 and {\
 &emsp; &emsp; &emsp; set bit 1 of cmpr to 1 if arg1 == arg2\
@@ -27,6 +28,7 @@ instructions: \
 &emsp; &emsp; &emsp;and set but 3 of cmpr to 1 if arg1 > arg2(this term might not be useful)\
 &emsp; &emsp; }\
 &emsp; &emsp; exit: exit printing arg1 and arg2\
+\
 &emsp; control:\
 &emsp; &emsp; all control instructions move arg2 into arg1:\
 &emsp; &emsp; ld: move unconditionally treating arg1 as an address arg2 as number\
@@ -35,6 +37,7 @@ instructions: \
 &emsp; &emsp; move: mov if previous args to cmp were equal\
 &emsp; &emsp; movl: mov if previous args to cmp were arg1 < arg2\
 &emsp; &emsp; movg: mov if previous args to cmp were arg1 \> arg2\
+\
 &emsp; registers:\
 &emsp; &emsp; cmpr: comparison register\
 &emsp; &emsp; outputr: output register\
