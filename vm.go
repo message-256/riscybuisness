@@ -47,6 +47,8 @@ var instructions = []func(int64, int64){
 	div,
 	sub,
 	not,
+	shl,
+	shr,
 	and,
 	or,
 	xor,
@@ -56,26 +58,6 @@ var instructions = []func(int64, int64){
 	movl,
 	movg,
 }
-var registers = []string{
-	"cmpr",
-	"outputr",
-	"insr",
-	"insp",
-	"addr1",
-	"addr2",
-	"intr",
-	"r1",
-	"r2",
-	"r3",
-	"r4",
-	"r5",
-	"r6",
-	"r7",
-	"r8",
-	"r9",
-	"r10",
-}
-
 func bint64(o bool) int64 {
 	if o {
 		return 1
@@ -88,7 +70,7 @@ func exit (registera,registerb int64){
 }
 func ld(register, number int64) {
 	if register == outputr {
-		fmt.Println(number)
+		fmt.Printf("%b\n",number)
 	}
 	addresses[register] = number
 }
@@ -119,6 +101,12 @@ func or(registera, registerb int64) {
 }
 func not(registera, registerb int64) {
 	addresses[registera] = ^addresses[registera]
+}
+func shr(registera,registerb int64){
+	addresses[registera] >>= addresses[registerb]
+}
+func shl(registera,registerb int64){
+	addresses[registera] <<= addresses[registerb]
 }
 func cmp(registera, registerb int64) {
 	addresses[cmpr] = bint64((addresses[registera] == addresses[registerb])) | (bint64((addresses[registera] < addresses[registerb])) << 1) | (bint64((addresses[registera] > addresses[registerb])) << 2)

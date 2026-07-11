@@ -2,13 +2,11 @@ package main
 
 import (
 	"slices"
-	//"bufio"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
-
 func paddparseh(in int64, bit int) string {
 	parsed := strconv.FormatInt(in, 16)
 	output := parsed
@@ -22,23 +20,25 @@ func main() {
 		fmt.Println("usage: %file(assembly)")
 	}
 	var instructions = map[string]int{
-		"exit": 0,
-		"ld":    1,
-		"mov":   2,
-		"add":   3,
-		"mul":   4,
-		"div":   5,
-		"sub":   6,
-		"not":   7,
-		"and":   8,
-		"or":    9,
-		"xor":   10,
-		"cmp":   11,
-		"movne": 12,
-		"move":  13,
-		"movl":  14,
-		"movg":  15,
-		"dump":  16,
+		"exit":0
+		"ld":1
+		"mov":2
+		"add":3
+		"mul":4
+		"div":5
+		"sub":6
+		"not":7
+		"shl":8
+		"shr":9
+		"and":10
+		"or":11
+		"xor":12
+		"cmp":13
+		"movne":14
+		"move":15
+		"movl":16
+		"movg":17
+
 	}
 	var registers = map[string]int{
 		"cmpr":    0,
