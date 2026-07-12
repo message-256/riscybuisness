@@ -9,7 +9,6 @@ import (
 	"errors"
 	"regexp"
 )
-
 func paddparseh(in int64, bit int) string {
 	parsed := strconv.FormatInt(in, 16)
 	output := parsed
@@ -17,6 +16,23 @@ func paddparseh(in int64, bit int) string {
 		output = "0" + output
 	}
 	return output
+}
+func getvalue(looked string,labels,registers map[string]int) (int,error){
+	var returned int
+	var err error
+	var ok bool
+	returned, err = strconv.Atoi(looked)
+	if err != nil {
+		returned, ok = registers[looked]
+		if !ok {
+			returned , ok = labels[looked]
+				if !ok {
+					return 0,errors.New(fmt.Sprintln( "error", looked, "not a known register nor is it a number", "(", err, ")","nor is it a label"))
+				}
+		}
+
+	}
+	return returned,nil
 }
 func main() {
 	if len(os.Args) < 2 {
@@ -67,14 +83,26 @@ func main() {
 		fmt.Fprintln(os.Stderr, "cant open file", err)
 		os.Exit(-1)
 	}
+	var collective error
+	label := regexp.MustCompile(`.*\:`);
+	var labels map[string]int = make(map[string]int)
 	stringedinput := string(input)
 	stringedinput = strings.ReplaceAll(stringedinput, "\t", "")
 	lines := strings.Split(stringedinput, "\n")
-	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" || regexp.MustCompile(`#.*`).Match([]byte(s)) })
+	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" || regexp.MustCompile(`#.*`).Match([]byte(s))})
+	for i := range lines {
+		if label.Match([]byte(lines[i])){
+			_,ok := registers[lines[i]]
+			if ok {
+				collective = errors.Join(collective,errors.New("cannot make label named " + lines[i] + " becuase it is a register"))
+			} else{
+				labels[lines[i][:len(lines[i])-1]] = i
+			}
+		}
+	}
+	lines = slices.DeleteFunc(lines, func(s string) bool { return  label.Match([]byte(s))})
 	var output string
 	var ra, rb int
-	var ok bool
-	var collective error
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
@@ -84,23 +112,14 @@ func main() {
 		}
 		operand := instructions[splitstring[0]]
 		registersstring := strings.Split(splitstring[1], ",")
-		ra, err = strconv.Atoi(registersstring[0])
-		if err != nil {
-			ra, ok = registers[registersstring[0]]
-			if !ok {
-				errstring := fmt.Sprintln( "error ", registersstring[0], "not a known register nor is it a number", "(", err, ")")
-				collective = errors.Join(collective,errors.New(errstring))
-			}
-
+		if len(registersstring) != 2 {
+			collective = errors.Join(collective,errors.New("not enough args to instruction"))
+			continue
 		}
-		rb, err = strconv.Atoi(registersstring[1])
-		if err != nil {
-			rb, ok = registers[registersstring[1]]
-			if !ok {
-				errstring := fmt.Sprintln( "error ", registersstring[1], "not a known register nor is it a number", "(", err, ")")
-				collective = errors.Join(collective,errors.New(errstring))
-			}
-		}
+		ra, err = getvalue(registersstring[0],labels,registers)
+		collective = errors.Join(collective,err)
+		rb, err = getvalue(registersstring[1],labels,registers)
+		collective = errors.Join(collective,err)
 		output += paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n"
 
 	}
