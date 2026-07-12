@@ -6,7 +6,7 @@ usage: \
 %instruction(8 bits)%registera(8 bit)%registerb(8 bit)
 instructions must be padded\
 in the assembler all instructions go instruction arg1,arg2\
-as well all comments are made by the #.*\
+as well all comments are made by the regex #.*\
 if you dont put it in this way it'll do something funny(im not really sure what)\
 instructions: \
 &emsp; &emsp; arithmatic:\
