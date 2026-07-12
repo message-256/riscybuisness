@@ -64,7 +64,7 @@ func main() {
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cant open file", err)
+		fmt.Fprintln(os.Stderr, "cant open file", err)
 		os.Exit(-1)
 	}
 	stringedinput := string(input)
