@@ -48,6 +48,6 @@ instructions: \
 &emsp; &emsp; intr: interupt register (n/a)\
 &emsp; &emsp; r1,10: general purpose registers
 \
-assembler:
-  takes in a file and then prints the assembled code to stdout
+assembler:\
+&emsp; &emsp;takes in a file and then prints the assembled code to stdout
   
