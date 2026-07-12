@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"errors"
+	"regexp"
 )
 
 func paddparseh(in int64, bit int) string {
@@ -20,6 +21,7 @@ func paddparseh(in int64, bit int) string {
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("usage: %file(assembly)")
+		os.Exit(0)
 	}
 	var instructions = map[string]int{
 		"exit":  0,
@@ -62,13 +64,13 @@ func main() {
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "cant open file", err)
+		fmt.Fprintf(os.Stderr, "cant open file", err)
 		os.Exit(-1)
 	}
 	stringedinput := string(input)
 	stringedinput = strings.ReplaceAll(stringedinput, "\t", "")
 	lines := strings.Split(stringedinput, "\n")
-	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" })
+	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" || regexp.MustCompile(`#.*`).Match([]byte(s)) })
 	var output string
 	var ra, rb int
 	var ok bool
