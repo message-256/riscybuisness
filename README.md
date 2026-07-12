@@ -11,7 +11,7 @@ as well to comment something you write\
 #comment\
 and all labels are declared as\
 label:\
-if you dont put it in this way it'll do something funny(im not really sure what)\
+if you dont put it in this way it'll do something funny(most of the time error)\
 instructions: \
 &emsp; &emsp; arithmatic:\
 &emsp; &emsp; all arithmatic functions place the result of arg1 by arg2 in arg1 unless other wise specified\
