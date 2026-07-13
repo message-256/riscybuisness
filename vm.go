@@ -71,7 +71,7 @@ func exit(registera, registerb int64) {
 }
 func ld(register, number int64) {
 	if register == outputr {
-		fmt.Printf("%b\n", number)
+		fmt.Printf("%032b\n", number)
 	}
 	addresses[register] = number
 }
