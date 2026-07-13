@@ -3,8 +3,8 @@ a small custom risc vm\
 its theoretically turing complete \
 but i havent tested it to hard\
 usage: \
-%instruction(8 bits)%registera(8 bit)%registerb(8 bit)
-instructions must be padded\
+%instruction(8 bits)%registera(8 bit)%registerb(8 bit)\
+instructions must be padded with 0s so fff becomes 0f0f0f\
 in the assembler all instructions go\
 instruction arg1,arg2\
 as well to comment something you write\
