@@ -30,7 +30,7 @@ instructions: \
 &emsp; &emsp; cmp: compare arg1 to arg2 and {\
 &emsp; &emsp; &emsp; set bit 1 of cmpr to 1 if arg1 == arg2\
 &emsp; &emsp; &emsp;set bit 2 of cmpr to 1 if arg1 < arg2\
-&emsp; &emsp; &emsp;and set but 3 of cmpr to 1 if arg1 > arg2(this term might not be useful)\
+&emsp; &emsp; &emsp;and set bit 3 of cmpr to 1 if arg1 > arg2(this term might not be useful)\
 &emsp; &emsp; }\
 &emsp; &emsp; exit: exit printing arg1 and arg2\
 \
