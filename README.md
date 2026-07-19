@@ -51,7 +51,7 @@ instructions: \
 &emsp; &emsp; insp: instruction pointer(contains the address of the current instruction)\
 &emsp; &emsp; addr1: address register (contains address of arg1)\
 &emsp; &emsp; addr2: address register (contains address of arg2)\
-&emsp; &emsp; intr: interupt register (n/a)\
+&emsp; &emsp; intr: interrupt register (n/a)\
 &emsp; &emsp; r1,10: general purpose registers
 \
 assembler:\
