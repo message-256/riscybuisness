@@ -14,7 +14,7 @@ var addresses []int64 = make([]int64, 0xfffF)
 
 const (
 	null = iota
-	cmpr 
+	cmpr
 	outputr
 	insr
 	insp
@@ -59,20 +59,21 @@ var instructions = []func(int64, int64){
 	movl,
 	movg,
 }
+
 func bint64(o bool) int64 {
 	if o {
 		return 1
 	}
 	return 0
 }
-func exit (registera,registerb int64){
-	fmt.Println(addresses[registera],addresses[registerb])
-	os.Exit(0);
+func exit(registera, registerb int64) {
+	fmt.Println(addresses[registera], addresses[registerb])
+	os.Exit(0)
 }
 func ld(register, number int64) {
-	
+
 	if register == outputr {
-		fmt.Printf("%032b\n",number)
+		fmt.Printf("%032b\n", number)
 	}
 	addresses[register] = number
 }
@@ -104,10 +105,10 @@ func or(registera, registerb int64) {
 func not(registera, registerb int64) {
 	addresses[registera] = ^addresses[registera]
 }
-func shr(registera,registerb int64){
+func shr(registera, registerb int64) {
 	addresses[registera] >>= addresses[registerb]
 }
-func shl(registera,registerb int64){
+func shl(registera, registerb int64) {
 	addresses[registera] <<= addresses[registerb]
 }
 func cmp(registera, registerb int64) {
@@ -158,7 +159,7 @@ func parse(line string) (instruction, error) {
 func run() {
 	for addresses[insp] < int64(len(instructionstack)) {
 		addresses[insr] = instructionstack[addresses[insp]].operand
-		if instructionstack[addresses[insp]].ra != null{
+		if instructionstack[addresses[insp]].ra != null {
 			addresses[addr1] = instructionstack[addresses[insp]].ra
 		}
 		if instructionstack[addresses[insp]].rb != null {
@@ -166,7 +167,6 @@ func run() {
 		}
 		addresses[insp]++
 		instructions[addresses[insr]](addresses[addr1], addresses[addr2])
-
 
 	}
 

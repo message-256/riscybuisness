@@ -28,7 +28,7 @@ func getvalue(looked string, labels, registers map[string]int) (int, error) {
 		if !ok {
 			returned, ok = labels[looked]
 			if !ok {
-				return 0, errors.New(fmt.Sprintf("error \"%s\" not a known register nor is it a number (%v) nor is it a label",looked,err))
+				return 0, errors.New(fmt.Sprintf("error \"%s\" not a known register nor is it a number (%v) nor is it a label", looked, err))
 			}
 		}
 
@@ -61,25 +61,24 @@ func main() {
 		"movg":  17,
 	}
 	var registers = map[string]int{
-		"null":0,
-		"cmpr":1,
-		"outputr":2,
-		"insr":3,
-		"insp":4,
-		"addr1":5,
-		"addr2":6,
-		"intr":7,
-		"r1":8,
-		"r2":9,
-		"r3":10,
-		"r4":11,
-		"r5":12,
-		"r6":13,
-		"r7":14,
-		"r8":15,
-		"r9":16,
-		"r10":17,
-
+		"null":    0,
+		"cmpr":    1,
+		"outputr": 2,
+		"insr":    3,
+		"insp":    4,
+		"addr1":   5,
+		"addr2":   6,
+		"intr":    7,
+		"r1":      8,
+		"r2":      9,
+		"r3":      10,
+		"r4":      11,
+		"r5":      12,
+		"r6":      13,
+		"r7":      14,
+		"r8":      15,
+		"r9":      16,
+		"r10":     17,
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
@@ -109,7 +108,7 @@ func main() {
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
-			errstring := fmt.Sprintf("no operand on line %d (\"%s\")",i,lines[i])
+			errstring := fmt.Sprintf("no operand on line %d (\"%s\")", i, lines[i])
 			collective = errors.Join(collective, errors.New(errstring))
 			continue
 		}
