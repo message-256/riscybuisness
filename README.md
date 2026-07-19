@@ -13,8 +13,8 @@ and all labels are declared as\
 label:\
 if you dont put it in this way it'll do something funny(most of the time error)\
 instructions: \
-&emsp; &emsp; arithmatic:\
-&emsp; &emsp; all arithmatic functions place the result of arg1 by arg2 in arg1 unless other wise specified\
+&emsp; &emsp; arithmetic:\
+&emsp; &emsp; all arithmetic functions place the result of arg1 by arg2 in arg1 unless other wise specified\
 &emsp; &emsp; mul: multiply\
 &emsp; &emsp; sub: subtract\
 &emsp; &emsp; add: addition\
