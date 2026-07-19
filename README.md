@@ -44,6 +44,7 @@ instructions: \
 &emsp; &emsp; movg: mov if previous args to cmp were arg1 \> arg2\
 \
 &emsp; registers:\
+&emsp; &emsp; null: do not change the load into addr[1|2] instead use the previous assigned value\ 
 &emsp; &emsp; cmpr: comparison register\
 &emsp; &emsp; outputr: output register\
 &emsp; &emsp; insr: instruction register(contains the current instruction)\
