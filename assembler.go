@@ -1,14 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
-	"errors"
-	"regexp"
 )
+
 func paddparseh(in int64, bit int) string {
 	parsed := strconv.FormatInt(in, 16)
 	output := parsed
@@ -17,7 +18,7 @@ func paddparseh(in int64, bit int) string {
 	}
 	return output
 }
-func getvalue(looked string,labels,registers map[string]int) (int,error){
+func getvalue(looked string, labels, registers map[string]int) (int, error) {
 	var returned int
 	var err error
 	var ok bool
@@ -25,14 +26,14 @@ func getvalue(looked string,labels,registers map[string]int) (int,error){
 	if err != nil {
 		returned, ok = registers[looked]
 		if !ok {
-			returned , ok = labels[looked]
-				if !ok {
-					return 0,errors.New(fmt.Sprintln( "error", looked, "not a known register nor is it a number", "(", err, ")","nor is it a label"))
-				}
+			returned, ok = labels[looked]
+			if !ok {
+				return 0, errors.New(fmt.Sprintln("error", looked, "not a known register nor is it a number", "(", err, ")", "nor is it a label"))
+			}
 		}
 
 	}
-	return returned,nil
+	return returned, nil
 }
 func main() {
 	if len(os.Args) < 2 {
@@ -60,23 +61,25 @@ func main() {
 		"movg":  17,
 	}
 	var registers = map[string]int{
-		"cmpr":    0,
-		"outputr": 1,
-		"insr":    2,
-		"insp":    3,
-		"addr1":   4,
-		"addr2":   5,
-		"intr":    6,
-		"r1":      7,
-		"r2":      8,
-		"r3":      9,
-		"r4":      10,
-		"r5":      11,
-		"r6":      12,
-		"r7":      13,
-		"r8":      14,
-		"r9":      15,
-		"r10":     16,
+		"null":0,
+		"cmpr":1,
+		"outputr":2,
+		"insr":3,
+		"insp":4,
+		"addr1":5,
+		"addr2":6,
+		"intr":7,
+		"r1":8,
+		"r2":9,
+		"r3":10,
+		"r4":11,
+		"r5":12,
+		"r6":13,
+		"r7":14,
+		"r8":15,
+		"r9":16,
+		"r10":17,
+
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
@@ -84,48 +87,48 @@ func main() {
 		os.Exit(-1)
 	}
 	var collective error
-	label := regexp.MustCompile(`.*\:`);
+	label := regexp.MustCompile(`.*\:`)
 	var labels map[string]int = make(map[string]int)
 	stringedinput := string(input)
 	stringedinput = strings.ReplaceAll(stringedinput, "\t", "")
 	lines := strings.Split(stringedinput, "\n")
-	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" || regexp.MustCompile(`#.*`).Match([]byte(s))})
+	lines = slices.DeleteFunc(lines, func(s string) bool { return s == "" || regexp.MustCompile(`#.*`).Match([]byte(s)) })
 	for i := range lines {
-		if label.Match([]byte(lines[i])){
-			_,ok := registers[lines[i]]
+		if label.Match([]byte(lines[i])) {
+			_, ok := registers[lines[i]]
 			if ok {
-				collective = errors.Join(collective,errors.New("cannot make label named " + lines[i] + " becuase it is a register"))
-			} else{
+				collective = errors.Join(collective, errors.New("cannot make label named "+lines[i]+" becuase it is a register"))
+			} else {
 				labels[lines[i][:len(lines[i])-1]] = i
 			}
 		}
 	}
-	lines = slices.DeleteFunc(lines, func(s string) bool { return  label.Match([]byte(s))})
-	var output string
+	lines = slices.DeleteFunc(lines, func(s string) bool { return label.Match([]byte(s)) })
+	var output strings.Builder
 	var ra, rb int
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
-			errstring := fmt.Sprintln( "no operand on line", i, "(\"", lines[i], "\")")
-			collective = errors.Join(collective,errors.New(errstring))
+			errstring := fmt.Sprintln("no operand on line", i, "(\"", lines[i], "\")")
+			collective = errors.Join(collective, errors.New(errstring))
 			continue
 		}
 		operand := instructions[splitstring[0]]
 		registersstring := strings.Split(splitstring[1], ",")
 		if len(registersstring) != 2 {
-			collective = errors.Join(collective,errors.New("not enough args to instruction"))
+			collective = errors.Join(collective, errors.New("not enough args to instruction"))
 			continue
 		}
-		ra, err = getvalue(registersstring[0],labels,registers)
-		collective = errors.Join(collective,err)
-		rb, err = getvalue(registersstring[1],labels,registers)
-		collective = errors.Join(collective,err)
-		output += paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n"
+		ra, err = getvalue(registersstring[0], labels, registers)
+		collective = errors.Join(collective, err)
+		rb, err = getvalue(registersstring[1], labels, registers)
+		collective = errors.Join(collective, err)
+		output.WriteString(paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n")
 
 	}
-	if collective == nil{
-		fmt.Print(output)
+	if collective == nil {
+		fmt.Print(output.String())
 	} else {
-		fmt.Fprintln(os.Stderr,collective)
+		fmt.Fprintln(os.Stderr, collective)
 	}
 }
