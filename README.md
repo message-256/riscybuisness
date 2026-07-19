@@ -44,7 +44,7 @@ instructions: \
 &emsp; &emsp; movg: mov if previous args to cmp were arg1 \> arg2\
 \
 &emsp; registers:\
-&emsp; &emsp; null: do not change value of addr[1|2](based on the arguments position) instead use previous asignment (this is how we do pointers now)\
+&emsp; &emsp; null: do not change value of addr[1|2](based on the arguments position) instead use previous asignment (this is how we do pointers)\
 &emsp; &emsp; cmpr: comparison register\
 &emsp; &emsp; outputr: output register\
 &emsp; &emsp; insr: instruction register(contains the current instruction)\
