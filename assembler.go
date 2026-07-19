@@ -28,7 +28,7 @@ func getvalue(looked string, labels, registers map[string]int) (int, error) {
 		if !ok {
 			returned, ok = labels[looked]
 			if !ok {
-				return 0, errors.New(fmt.Sprintln("error", looked, "not a known register nor is it a number", "(", err, ")", "nor is it a label"))
+				return 0, errors.New(fmt.Sprintf("error \"%s\" not a known register nor is it a number (%v) nor is it a label",looked,err))
 			}
 		}
 
@@ -109,7 +109,7 @@ func main() {
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
-			errstring := fmt.Sprintln("no operand on line", i, "(\"", lines[i], "\")")
+			errstring := fmt.Sprintf("no operand on line %d (\"%s\")",i,lines[i])
 			collective = errors.Join(collective, errors.New(errstring))
 			continue
 		}
