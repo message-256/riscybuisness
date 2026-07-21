@@ -154,23 +154,12 @@ func movg(registera, registerb int64) {
 func parse(line string) (instruction, error) {
 	var given error
 	var returned instruction
-	var err error
 	if len(line) != 6 {
-		return returned, errors.New("instruction length wrong" + line + "(length " + strconv.Itoa(len(line)) + ") is not 6")
+		return returned, errors.New("instruction length wrong " + line + " (length " + strconv.Itoa(len(line)) + ") is not 6")
 	}
-	returned.operand, err = strconv.ParseInt(string(line[0:2]), 16, 32)
-	if err != nil {
-		given = errors.Join(given, err)
-	}
-	returned.ra, err = strconv.ParseInt(string(line[2:4]), 16, 32)
-	if err != nil {
-		given = errors.Join(given, err)
-	}
-	returned.rb, err = strconv.ParseInt(string(line[4:6]), 16, 32)
-	if err != nil {
-		given = errors.Join(given, err)
-	}
-	return returned, given
+	_, given = fmt.Sscanf(line, "%02x%02x%02x", &returned.operand, &returned.ra, &returned.rb)
+	errorstring := line + ":" + given.Error()
+	return returned, errors.New(errorstring)
 
 }
 func run() {
