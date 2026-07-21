@@ -87,8 +87,12 @@ func mov(registera, registerb int64) {
 		return
 	}
 	if registerb == stack {
-		ld(registera, addresses[addresses[sp]])
-		addresses[sp]--
+		if addresses[sp] > stack {
+			ld(registera, addresses[addresses[sp]])
+			addresses[sp]--
+		} else {
+			ld(registera, 0)
+		}
 		return
 	}
 	ld(registera, addresses[registerb])
