@@ -10,14 +10,6 @@ import (
 	"strings"
 )
 
-func paddparseh(in int64, bit int) string {
-	parsed := strconv.FormatInt(in, 16)
-	output := parsed
-	for i := 0; i < bit-len(parsed); i++ {
-		output = "0" + output
-	}
-	return output
-}
 func getvalue(looked string, labels, registers map[string]int) (int, error) {
 	var returned int
 	var err error
@@ -79,6 +71,8 @@ func main() {
 		"r8":      15,
 		"r9":      16,
 		"r10":     17,
+		"stack":   18,
+		"sp":      19,
 	}
 	input, err := os.ReadFile(os.Args[1])
 	if err != nil {
@@ -103,7 +97,7 @@ func main() {
 		}
 	}
 	lines = slices.DeleteFunc(lines, func(s string) bool { return label.Match([]byte(s)) })
-	var output strings.Builder
+	var output string
 	var ra, rb int
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
@@ -122,11 +116,11 @@ func main() {
 		collective = errors.Join(collective, err)
 		rb, err = getvalue(registersstring[1], labels, registers)
 		collective = errors.Join(collective, err)
-		output.WriteString(paddparseh(int64(operand), 2) + paddparseh(int64(ra), 2) + paddparseh(int64(rb), 2) + "\n")
+		output += fmt.Sprintf("%02x%02x%02x\n", operand, ra, rb)
 
 	}
 	if collective == nil {
-		fmt.Print(output.String())
+		fmt.Print(output)
 	} else {
 		fmt.Fprintln(os.Stderr, collective)
 	}

@@ -31,6 +31,8 @@ const (
 	r8
 	r9
 	r10
+	stack
+	sp
 )
 
 type instruction struct {
@@ -71,13 +73,24 @@ func exit(registera, registerb int64) {
 	os.Exit(0)
 }
 func ld(register, number int64) {
-
 	if register == outputr {
 		fmt.Printf("%032b\n", number)
+	} else if register == stack {
+		addresses[sp]++
+		addresses[addresses[sp]] = number
 	}
 	addresses[register] = number
 }
 func mov(registera, registerb int64) {
+	//moving a register to itself is a nop
+	if registera == registerb {
+		return
+	}
+	if registerb == stack {
+		ld(registera, addresses[addresses[sp]])
+		addresses[sp]--
+		return
+	}
 	ld(registera, addresses[registerb])
 }
 func add(registera, registerb int64) {
@@ -172,6 +185,7 @@ func run() {
 
 }
 func main() {
+	addresses[sp] = sp + 1
 	if len(os.Args) > 1 {
 		bytes, err := os.ReadFile(os.Args[1])
 		if err != nil {
