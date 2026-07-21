@@ -52,7 +52,8 @@ instructions: \
 &emsp; &emsp; addr1: address register (contains address of arg1)\
 &emsp; &emsp; addr2: address register (contains address of arg2)\
 &emsp; &emsp; intr: interrupt register (n/a)\
-&emsp; &emsp; r1,10: general purpose registers
-\
+&emsp; &emsp; r1,10: general purpose registers\
+&emsp; &emsp; stack: stack register(contains the current value at the top of the stack)\
+&emsp; &emsp; sp: stack pointer(contains the current size of the stack)\
 assembler:\
 &emsp; &emsp;takes in a file and then prints the assembled code to stdout
