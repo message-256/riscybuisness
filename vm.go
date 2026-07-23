@@ -158,6 +158,7 @@ func parse(line string) (instruction, error) {
 		return returned, errors.New("instruction length wrong " + line + " (length " + strconv.Itoa(len(line)) + ") is not 6")
 	}
 	_, given = fmt.Sscanf(line, "%02x%02x%02x", &returned.operand, &returned.ra, &returned.rb)
+	//errors.Join was giving me some weird results
 	errorstring := line + ":" + given.Error()
 	return returned, errors.New(errorstring)
 
