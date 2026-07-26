@@ -102,20 +102,30 @@ func main() {
 	for i := range lines {
 		splitstring := strings.Split(lines[i], " ")
 		if len(splitstring) != 2 {
-			errstring := fmt.Sprintf("no operand on line %d (\"%s\")", i, lines[i])
+			errstring := fmt.Sprintf("no operand on line %d \"%s\" ", i, lines[i])
 			collective = errors.Join(collective, errors.New(errstring))
 			continue
 		}
 		operand := instructions[splitstring[0]]
 		registersstring := strings.Split(splitstring[1], ",")
 		if len(registersstring) != 2 {
-			collective = errors.Join(collective, errors.New("not enough args to instruction"))
+			collective = errors.Join(collective, errors.New(fmt.Sprintf("on line %d not enough args to instruction", i)))
 			continue
 		}
 		ra, err = getvalue(registersstring[0], labels, registers)
 		collective = errors.Join(collective, err)
+
+		if ra > 0xff {
+			collective = errors.Join(collective, errors.New(fmt.Sprintf("on line %d arga > max register value(xff)", i)))
+		}
+
 		rb, err = getvalue(registersstring[1], labels, registers)
 		collective = errors.Join(collective, err)
+
+		if rb > 0xff {
+			//collective = errors.Join(collective , errors.New(fmt.Sprintf("on line %d argb > max register value(xff)",i)))
+		}
+
 		output += fmt.Sprintf("%02x%02x%02x\n", operand, ra, rb)
 
 	}
