@@ -123,7 +123,7 @@ func main() {
 		collective = errors.Join(collective, err)
 
 		if rb > 0xff {
-			//collective = errors.Join(collective , errors.New(fmt.Sprintf("on line %d argb > max register value(xff)",i)))
+			collective = errors.Join(collective , errors.New(fmt.Sprintf("on line %d argb > max register value(xff)",i)))
 		}
 
 		output += fmt.Sprintf("%02x%02x%02x\n", operand, ra, rb)
